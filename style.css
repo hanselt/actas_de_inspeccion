@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Libre+Baskerville:italic&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+h2 {
+    font-family: 'Libre Baskerville', serif;
+    letter-spacing: 0.05em;
+}
+
+/* Estilos específicos para el PDF */
+@media print {
+    .shadow-xl {
+        box-shadow: none !important;
+    }
+    body {
+        background: white;
+    }
+}
+
+input::placeholder, textarea::placeholder {
+    color: #cbd5e1;
+    font-weight: 300;
+}
+
+/* Transiciones suaves para inputs */
+input, textarea {
+    transition: all 0.2s ease;
+}
+
+input:focus, textarea:focus {
+    border-color: #3b82f6;
+    background-color: #f8fafc;
+}

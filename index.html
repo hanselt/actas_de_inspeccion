@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sistema de Actas - Inspección Ocular</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .input-field { @apply w-full border-b-2 border-slate-200 py-3 outline-none focus:border-blue-600 transition-colors bg-transparent text-lg; }
+        .card { @apply bg-white p-6 rounded-xl shadow-sm border border-slate-100 mb-6; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 pb-20">
+
+    <header class="bg-slate-900 text-white p-4 sticky top-0 z-50 shadow-lg no-print">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center font-bold text-xs">MC</div>
+                <h1 class="text-sm font-semibold tracking-tight uppercase hidden sm:block">DDC Cusco - Actas</h1>
+            </div>
+            <div class="flex space-x-2">
+                <button onclick="clearForm()" class="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white transition">Limpiar</button>
+                <button onclick="exportToPDF()" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg text-sm font-bold shadow-md transition-all active:scale-95">
+                    Exportar PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-6 px-4 max-w-4xl" id="app-container">
+        
+        <div id="pdf-area" class="bg-white">
+            
+            <div class="text-center mb-10 pt-4">
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Ministerio de Cultura</p>
+                <p class="text-[10px] text-slate-400 uppercase mb-4">Dirección Desconcentrada de Cultura Cusco</p>
+                <h2 class="text-xl font-bold text-slate-900 border-y border-slate-100 py-4 mb-2">ACTA INFORMATIZADA DE INSPECCIÓN</h2>
+                <input type="text" id="acta_correlativo" placeholder="N° 000-2025-ETC-XXXX/MC" 
+                       class="text-center w-full font-mono text-blue-700 font-bold focus:outline-none placeholder:text-slate-200">
+            </div>
+
+            <div class="card">
+                <h3 class="text-xs font-black text-blue-600 uppercase tracking-widest mb-6">01. Datos del Proyecto</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Modalidad</label>
+                        <select id="modalidad" class="w-full border-b-2 border-slate-200 py-3 bg-transparent font-medium">
+                            <option>PLAN MONITOREO ARQUEOLÓGICO (PMA)</option>
+                            <option>PROYECTO DE EVALUACIÓN ARQUEOLÓGICA (PEA)</option>
+                            <option>PROYECTO DE RESCATE ARQUEOLÓGICO (PRA)</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Fecha de Inspección</label>
+                        <input type="date" id="fecha" class="input-field">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">N° Inspección / Expediente</label>
+                        <input type="text" id="expediente" placeholder="Ej. 1ra Inspección / Exp. 2025-123" class="input-field">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Resolución Directoral</label>
+                        <input type="text" id="rd" placeholder="N° 000-2025-DE-DDC-CUS/MC" class="input-field">
+                    </div>
+                    <div class="md:col-span-2 space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Nombre del Proyecto</label>
+                        <textarea id="nombre_proyecto" rows="2" class="input-field resize-none" placeholder="Escriba el nombre completo del proyecto..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xs font-black text-blue-600 uppercase tracking-widest mb-6">02. Personal Responsable</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <input type="text" id="director" placeholder="Nombre del Director(a)" class="input-field">
+                    <input type="text" id="coarpe" placeholder="RNA / COARPE" class="input-field">
+                    <input type="text" id="residente" placeholder="Arqueólogo Residente" class="input-field">
+                    <input type="text" id="conservador" placeholder="Conservador" class="input-field">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xs font-black text-blue-600 uppercase tracking-widest mb-6">03. Ubicación Política</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="localidad" placeholder="Localidad" class="input-field">
+                    <input type="text" id="distrito" placeholder="Distrito" class="input-field">
+                    <input type="text" id="provincia" value="Cusco" class="input-field text-slate-400">
+                    <input type="text" id="departamento" value="Cusco" class="input-field text-slate-400">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xs font-black text-blue-600 uppercase tracking-widest mb-6">04. Resultados de Inspección</h3>
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 block">22.0 Conclusiones</label>
+                        <textarea id="conclusiones" rows="5" class="w-full p-4 bg-slate-50 rounded-lg border border-slate-200 outline-none focus:border-blue-500 transition-all" placeholder="Detalle los hallazgos..."></textarea>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase mb-2 block">23.0 Recomendaciones</label>
+                        <textarea id="recomendaciones" rows="5" class="w-full p-4 bg-slate-50 rounded-lg border border-slate-200 outline-none focus:border-blue-500 transition-all" placeholder="Sugerencias técnicas..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-12 grid grid-cols-2 gap-12 px-8 pb-12 text-center">
+                <div class="border-t border-slate-300 pt-4">
+                    <p class="text-[10px] font-bold uppercase">Inspector DDC-Cusco</p>
+                </div>
+                <div class="border-t border-slate-300 pt-4">
+                    <p class="text-[10px] font-bold uppercase">Responsable del Proyecto</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="save-indicator" class="fixed bottom-4 left-4 bg-emerald-500 text-white text-[10px] px-3 py-1 rounded-full opacity-0 transition-opacity">
+        Cambios guardados
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
